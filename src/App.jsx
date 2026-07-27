@@ -96,6 +96,7 @@ function App() {
       <AuthProvider>
         <Router future={routerFuture}>
           <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
 
             <Route path="/admin" element={
