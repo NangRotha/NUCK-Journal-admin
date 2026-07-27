@@ -79,7 +79,7 @@ const HeroSlideForm = () => {
       if (id) {
         await axiosInstance.put(`/hero-slides/${id}`, formDataObj);
       } else {
-        await axiosInstance.post('/hero-slides', formDataObj);
+        await axiosInstance.post('/hero-slides/', formDataObj);
       }
       navigate('/admin/hero-slides');
     } catch (error) {

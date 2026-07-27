@@ -14,7 +14,7 @@ const AdminHeader = () => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await axiosInstance.get('/settings');
+        const response = await axiosInstance.get('/settings/');
         const settingsData = {};
         response.data.forEach(setting => {
           settingsData[setting.key] = setting.value;

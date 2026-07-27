@@ -18,7 +18,7 @@ const Policies = () => {
 
   const fetchPolicies = async () => {
     try {
-      const response = await axiosInstance.get('/policies');
+      const response = await axiosInstance.get('/policies/');
       setPolicies(response.data.policies || []);
     } catch (error) {
       console.error('Error fetching policies:', error);

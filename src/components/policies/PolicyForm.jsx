@@ -27,7 +27,7 @@ const PolicyForm = ({ policy, onSave }) => {
       if (policy?.id) {
         await axiosInstance.put(`/policies/${policy.id}`, formData);
       } else {
-        await axiosInstance.post('/policies', formData);
+        await axiosInstance.post('/policies/', formData);
       }
       
       if (onSave) onSave();

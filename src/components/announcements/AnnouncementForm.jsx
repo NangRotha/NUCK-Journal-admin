@@ -62,7 +62,7 @@ const AnnouncementForm = () => {
       if (id) {
         await axiosInstance.put(`/announcements/${id}`, payload);
       } else {
-        await axiosInstance.post('/announcements', payload);
+        await axiosInstance.post('/announcements/', payload);
       }
       navigate('/admin/announcements');
     } catch (error) {

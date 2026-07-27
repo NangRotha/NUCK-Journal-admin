@@ -5,7 +5,7 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://nuck-journal-backend-production.up.railway.app';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.DEV ? '/' : API_BASE_URL,
+  baseURL: API_BASE_URL,
   timeout: 10000,
 });
 

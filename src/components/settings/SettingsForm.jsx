@@ -23,7 +23,7 @@ const SettingsForm = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await axiosInstance.get('/settings');
+      const response = await axiosInstance.get('/settings/');
       const settingsData = {};
       response.data.forEach(setting => {
         settingsData[setting.key] = setting.value;
@@ -67,7 +67,7 @@ const SettingsForm = () => {
     formData.append('file', file);
 
     try {
-      const response = await axiosInstance.post('/upload', formData);
+      const response = await axiosInstance.post('/upload/', formData);
       setSettings(prev => ({ ...prev, logo_url: response.data.url }));
     } catch (error) {
       console.error('Error uploading logo:', error);

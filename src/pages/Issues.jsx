@@ -17,7 +17,7 @@ const Issues = () => {
 
   const fetchIssues = async () => {
     try {
-      const response = await axiosInstance.get('/issues');
+      const response = await axiosInstance.get('/issues/');
       setIssues(response.data.issues || []);
     } catch (error) {
       console.error('Error fetching issues:', error);

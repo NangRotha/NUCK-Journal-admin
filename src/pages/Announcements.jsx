@@ -18,7 +18,7 @@ const Announcements = () => {
 
   const fetchAnnouncements = async () => {
     try {
-      const response = await axiosInstance.get('/announcements', {
+      const response = await axiosInstance.get('/announcements/', {
         params: {
           limit: 100,
           active_only: false

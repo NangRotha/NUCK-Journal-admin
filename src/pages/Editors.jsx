@@ -17,7 +17,7 @@ const Editors = () => {
 
   const fetchEditors = async () => {
     try {
-      const response = await axiosInstance.get('/editors');
+      const response = await axiosInstance.get('/editors/');
       setEditors(response.data.editors || []);
     } catch (error) {
       console.error('Error fetching editors:', error);

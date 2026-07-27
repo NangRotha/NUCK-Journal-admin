@@ -86,7 +86,7 @@ const EditorForm = () => {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
-        await axiosInstance.post('/editors', formDataObj, {
+        await axiosInstance.post('/editors/', formDataObj, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }

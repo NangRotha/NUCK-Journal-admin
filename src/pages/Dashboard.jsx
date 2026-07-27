@@ -33,25 +33,25 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch articles
-      const articlesRes = await axiosInstance.get('/articles');
-      const editorsRes = await axiosInstance.get('/editors');
-      const issuesRes = await axiosInstance.get('/issues');
+      const [articlesRes, editorsRes, issuesRes] = await Promise.all([
+        axiosInstance.get('/articles/').catch(() => ({ data: { articles: [] } })),
+        axiosInstance.get('/editors/').catch(() => ({ data: { editors: [] } })),
+        axiosInstance.get('/issues/').catch(() => ({ data: { issues: [] } })),
+      ]);
 
-      // Stats
+      const articles = articlesRes.data.articles || [];
+      const editors = editorsRes.data.editors || [];
+      const issues = issuesRes.data.issues || [];
+
       setStats({
-        totalArticles: articlesRes.data.total || articlesRes.data.articles?.length || 0,
-        totalEditors: editorsRes.data.total || editorsRes.data.editors?.length || 0,
-        totalIssues: issuesRes.data.total || issuesRes.data.issues?.length || 0,
-        pendingReviews: articlesRes.data.articles?.filter(a => a.status === 'under_review').length || 0,
+        totalArticles: articles.length,
+        totalEditors: editors.length,
+        totalIssues: issues.length,
+        pendingReviews: articles.filter(a => a.status === 'under_review').length,
       });
 
-      // Bar Chart Data (ស្ថិតិតាម Domain)
-      const domainCounts = {
-        A: 0,
-        B: 0,
-      };
-      (articlesRes.data.articles || []).forEach(article => {
+      const domainCounts = { A: 0, B: 0 };
+      articles.forEach(article => {
         if (article.domain === 'A') domainCounts.A++;
         else if (article.domain === 'B') domainCounts.B++;
       });
@@ -60,9 +60,8 @@ const Dashboard = () => {
         { name: 'Domain B', value: domainCounts.B },
       ]);
 
-      // Pie Chart Data (ស្ថិតិតាម Status)
       const statusCounts = {};
-      (articlesRes.data.articles || []).forEach(article => {
+      articles.forEach(article => {
         const status = article.status || 'unknown';
         statusCounts[status] = (statusCounts[status] || 0) + 1;
       });
@@ -73,16 +72,9 @@ const Dashboard = () => {
         }))
       );
 
-      // Recent activities
       const recent = [
-        ...(articlesRes.data.articles?.slice(0, 5) || []).map(a => ({
-          ...a,
-          type: 'article'
-        })),
-        ...(editorsRes.data.editors?.slice(0, 3) || []).map(e => ({
-          ...e,
-          type: 'editor'
-        })),
+        ...articles.slice(0, 5).map(a => ({ ...a, type: 'article' })),
+        ...editors.slice(0, 3).map(e => ({ ...e, type: 'editor' })),
       ].sort((a, b) => new Date(b.created_at || b.submitted_date) - new Date(a.created_at || a.submitted_date));
 
       setActivities(recent);

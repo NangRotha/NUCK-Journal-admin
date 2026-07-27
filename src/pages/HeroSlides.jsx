@@ -15,7 +15,7 @@ const HeroSlides = () => {
 
   const fetchSlides = async () => {
     try {
-      const response = await axiosInstance.get('/hero-slides?active_only=false');
+      const response = await axiosInstance.get('/hero-slides/?active_only=false');
       setSlides(response.data || []);
     } catch (error) {
       console.error('Error fetching hero slides:', error);

@@ -18,7 +18,7 @@ const Articles = () => {
 
   const fetchArticles = async () => {
     try {
-      const response = await axiosInstance.get('/articles');
+      const response = await axiosInstance.get('/articles/');
       setArticles(response.data.articles || []);
     } catch (error) {
       console.error('Error fetching articles:', error);
