@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // ទាញយក URL ពី Environment Variable (ឬប្រើ Default ប្រសិនបើគ្មាន)
 // សូមប្តូរ URL ខាងក្រោមទៅជា URL របស់ Railway ឬ Vercel របស់អ្នក
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://nuck-journal-backend.vercel.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://nuck-journal-backend-production.up.railway.app';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.DEV ? '/' : API_BASE_URL,
