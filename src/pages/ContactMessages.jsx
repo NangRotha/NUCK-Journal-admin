@@ -16,7 +16,7 @@ const ContactMessages = () => {
 
   const fetchMessages = async () => {
     try {
-      const response = await axiosInstance.get('/contact-messages');
+      const response = await axiosInstance.get('/contact-messages/');
       console.log('🟢 Raw Backend Response:', response.data);
       
       const messagesData = Array.isArray(response.data) ? response.data : [];
