@@ -25,7 +25,7 @@ const AnnouncementForm = () => {
 
   const fetchAnnouncement = async () => {
     try {
-      const response = await axiosInstance.get(`/announcements/${id}`);
+      const response = await axiosInstance.get(`/announcements/${id}/`);
       const data = response.data;
       setFormData({
         title: data.title || '',
@@ -60,7 +60,7 @@ const AnnouncementForm = () => {
       delete payload.id;
 
       if (id) {
-        await axiosInstance.put(`/announcements/${id}`, payload);
+        await axiosInstance.put(`/announcements/${id}/`, payload);
       } else {
         await axiosInstance.post('/announcements/', payload);
       }

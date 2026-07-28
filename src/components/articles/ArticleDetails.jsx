@@ -18,7 +18,7 @@ const ArticleDetails = () => {
 
   const fetchArticle = async () => {
     try {
-      const response = await axiosInstance.get(`/articles/${id}`);
+      const response = await axiosInstance.get(`/articles/${id}/`);
       setArticle(response.data);
     } catch (error) {
       console.error('Error fetching article:', error);
@@ -30,7 +30,7 @@ const ArticleDetails = () => {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      await axiosInstance.put(`/articles/${id}`, { status: newStatus });
+      await axiosInstance.put(`/articles/${id}/`, { status: newStatus });
       fetchArticle();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -41,7 +41,7 @@ const ArticleDetails = () => {
     if (!confirm('Are you sure you want to delete this article?')) return;
 
     try {
-      await axiosInstance.delete(`/articles/${id}`);
+      await axiosInstance.delete(`/articles/${id}/`);
       navigate('/admin/articles');
     } catch (error) {
       console.error('Error deleting article:', error);

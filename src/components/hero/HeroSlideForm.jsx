@@ -28,7 +28,7 @@ const HeroSlideForm = () => {
 
   const fetchSlide = async () => {
     try {
-      const response = await axiosInstance.get(`/hero-slides/${id}`);
+      const response = await axiosInstance.get(`/hero-slides/${id}/`);
       const data = response.data;
       setFormData({
         title: data.title || '',
@@ -77,7 +77,7 @@ const HeroSlideForm = () => {
       }
 
       if (id) {
-        await axiosInstance.put(`/hero-slides/${id}`, formDataObj);
+        await axiosInstance.put(`/hero-slides/${id}/`, formDataObj);
       } else {
         await axiosInstance.post('/hero-slides/', formDataObj);
       }

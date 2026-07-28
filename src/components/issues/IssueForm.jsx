@@ -1,30 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../../api/axiosConfig';
+import Loading from '../common/Loading';
 
-const IssueForm = ({ issue, onSave }) => {
+const IssueForm = ({ issue: propIssue, onSave }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
-
-  const getDefaultDate = () => {
-    if (issue?.published_date) {
-      return issue.published_date.split('T')[0];
-    }
-    return new Date().toISOString().split('T')[0];
-  };
-
+  const [fetching, setFetching] = useState(false);
+  const [issue, setIssue] = useState(propIssue || null);
   const [formData, setFormData] = useState({
-    volume: issue?.volume || '',
-    number: issue?.number || '',
-    year: issue?.year || new Date().getFullYear(),
-    title: issue?.title || '',
-    description: issue?.description || '',
-    is_current: issue?.is_current || false,
-    published_date: getDefaultDate(),
+    volume: propIssue?.volume || '',
+    number: propIssue?.number || '',
+    year: propIssue?.year || new Date().getFullYear(),
+    title: propIssue?.title || '',
+    description: propIssue?.description || '',
+    is_current: propIssue?.is_current || false,
+    published_date: propIssue?.published_date ? propIssue.published_date.split('T')[0] : new Date().toISOString().split('T')[0],
     cover_image: null,
   });
+
+  useEffect(() => {
+    if (id && !propIssue) {
+      fetchIssue();
+    } else if (propIssue) {
+      setIssue(propIssue);
+    }
+  }, [id, propIssue]);
+
+  const fetchIssue = async () => {
+    setFetching(true);
+    try {
+      const response = await axiosInstance.get(`/issues/${id}/`);
+      const data = response.data;
+      setIssue(data);
+      setFormData({
+        volume: data.volume || '',
+        number: data.number || '',
+        year: data.year || new Date().getFullYear(),
+        title: data.title || '',
+        description: data.description || '',
+        is_current: data.is_current || false,
+        published_date: data.published_date ? data.published_date.split('T')[0] : new Date().toISOString().split('T')[0],
+        cover_image: null,
+      });
+    } catch (error) {
+      console.error('Error fetching issue:', error);
+      alert('Failed to load issue');
+      navigate('/admin/issues');
+    } finally {
+      setFetching(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -61,7 +90,9 @@ const IssueForm = ({ issue, onSave }) => {
       }
 
       if (issue?.id) {
-        await axiosInstance.put(`/issues/${issue.id}`, formDataObj);
+        await axiosInstance.put(`/issues/${issue.id}/`, formDataObj, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
       } else {
         await axiosInstance.post('/issues/', formDataObj, {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -77,6 +108,10 @@ const IssueForm = ({ issue, onSave }) => {
       setLoading(false);
     }
   };
+
+  if (fetching) {
+    return <Loading fullScreen message="Loading issue data..." />;
+  }
 
   return (
     <div className="bg-white/30 backdrop-blur-lg border border-white/20 rounded-3xl shadow-lg p-6 max-w-4xl mx-auto animate-fadeInUp">

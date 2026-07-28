@@ -1,18 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../../api/axiosConfig';
+import Loading from '../common/Loading';
 
-const PolicyForm = ({ policy, onSave }) => {
+const PolicyForm = ({ policy: propPolicy, onSave }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const [policy, setPolicy] = useState(propPolicy || null);
   const [formData, setFormData] = useState({
-    title: policy?.title || '',
-    content: policy?.content || '',
-    category: policy?.category || 'peer_review',
-    version: policy?.version || '1.0',
+    title: propPolicy?.title || '',
+    content: propPolicy?.content || '',
+    category: propPolicy?.category || 'peer_review',
+    version: propPolicy?.version || '1.0',
   });
+
+  useEffect(() => {
+    if (id && !propPolicy) {
+      fetchPolicy();
+    } else if (propPolicy) {
+      setPolicy(propPolicy);
+    }
+  }, [id, propPolicy]);
+
+  const fetchPolicy = async () => {
+    setFetching(true);
+    try {
+      const response = await axiosInstance.get(`/policies/${id}/`);
+      const data = response.data;
+      setPolicy(data);
+      setFormData({
+        title: data.title || '',
+        content: data.content || '',
+        category: data.category || 'peer_review',
+        version: data.version || '1.0',
+      });
+    } catch (error) {
+      console.error('Error fetching policy:', error);
+      alert('Failed to load policy');
+      navigate('/admin/policies');
+    } finally {
+      setFetching(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,8 +57,9 @@ const PolicyForm = ({ policy, onSave }) => {
     setLoading(true);
 
     try {
+      // 🛠️ CRITICAL FIX: Added trailing slashes to match FastAPI
       if (policy?.id) {
-        await axiosInstance.put(`/policies/${policy.id}`, formData);
+        await axiosInstance.put(`/policies/${policy.id}/`, formData);
       } else {
         await axiosInstance.post('/policies/', formData);
       }
@@ -34,6 +68,7 @@ const PolicyForm = ({ policy, onSave }) => {
       navigate('/admin/policies');
     } catch (error) {
       console.error('Error saving policy:', error);
+      alert('Failed to save policy. Please check the console.');
     } finally {
       setLoading(false);
     }
@@ -50,6 +85,10 @@ const PolicyForm = ({ policy, onSave }) => {
     { value: 'data_availability', label: 'Data Availability' },
     { value: 'complaints', label: 'Complaints & Appeals' },
   ];
+
+  if (fetching) {
+    return <Loading fullScreen message="Loading policy data..." />;
+  }
 
   return (
     <div className="bg-white/30 backdrop-blur-lg border border-white/20 rounded-3xl shadow-lg p-6 max-w-4xl mx-auto animate-fadeInUp">

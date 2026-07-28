@@ -42,7 +42,7 @@ const Announcements = () => {
     if (!confirm('Are you sure you want to delete this announcement?')) return;
 
     try {
-      await axiosInstance.delete(`/announcements/${id}`);
+      await axiosInstance.delete(`/announcements/${id}/`);
       fetchAnnouncements(); // Refresh list
     } catch (error) {
       console.error('Error deleting announcement:', error);

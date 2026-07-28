@@ -30,7 +30,7 @@ const Issues = () => {
     if (!confirm('Are you sure you want to delete this issue?')) return;
 
     try {
-      await axiosInstance.delete(`/issues/${id}`);
+      await axiosInstance.delete(`/issues/${id}/`);
       fetchIssues();
     } catch (error) {
       console.error('Error deleting issue:', error);
@@ -39,7 +39,7 @@ const Issues = () => {
 
   const handleSetCurrent = async (id) => {
     try {
-      await axiosInstance.put(`/issues/${id}`, { is_current: true });
+      await axiosInstance.put(`/issues/${id}/`, { is_current: true });
       fetchIssues();
     } catch (error) {
       console.error('Error setting current issue:', error);

@@ -28,7 +28,7 @@ const HeroSlides = () => {
     if (!confirm('Are you sure you want to delete this slide?')) return;
 
     try {
-      await axiosInstance.delete(`/hero-slides/${id}`);
+      await axiosInstance.delete(`/hero-slides/${id}/`);
       fetchSlides();
     } catch (error) {
       console.error('Error deleting slide:', error);

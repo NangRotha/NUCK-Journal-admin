@@ -45,7 +45,7 @@ const ArticleForm = ({ article: propArticle, onSave }) => {
   const fetchArticle = async () => {
     setFetching(true);
     try {
-      const response = await axiosInstance.get(`/articles/${id}`);
+      const response = await axiosInstance.get(`/articles/${id}/`);
       const data = response.data;
       setArticle(data);
       setFormData({

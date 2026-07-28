@@ -31,7 +31,7 @@ const ContactMessages = () => {
 
   const handleMarkAsRead = async (id) => {
     try {
-      await axiosInstance.put(`/contact-messages/${id}`, { is_read: true });
+      await axiosInstance.put(`/contact-messages/${id}/`, { is_read: true });
       fetchMessages();
     } catch (error) {
       console.error('Error marking message as read:', error);
@@ -41,7 +41,7 @@ const ContactMessages = () => {
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this message?')) return;
     try {
-      await axiosInstance.delete(`/contact-messages/${id}`);
+      await axiosInstance.delete(`/contact-messages/${id}/`);
       fetchMessages();
     } catch (error) {
       console.error('Error deleting message:', error);

@@ -30,7 +30,7 @@ const Editors = () => {
     if (!confirm('Are you sure you want to delete this editor?')) return;
 
     try {
-      await axiosInstance.delete(`/editors/${id}`);
+      await axiosInstance.delete(`/editors/${id}/`);
       fetchEditors();
     } catch (error) {
       console.error('Error deleting editor:', error);

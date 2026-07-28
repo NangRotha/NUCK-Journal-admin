@@ -27,18 +27,20 @@ const Policies = () => {
     }
   };
 
+  // 🛠️ CRITICAL FIX: Added a trailing slash '/' at the end of the URL
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this policy?')) return;
 
     try {
-      await axiosInstance.delete(`/policies/${id}`);
+      await axiosInstance.delete(`/policies/${id}/`); 
+      // Refresh the list after successful deletion
       fetchPolicies();
     } catch (error) {
       console.error('Error deleting policy:', error);
+      alert('Failed to delete policy. Please check the console for errors.');
     }
   };
 
-  // Policy categories with labels
   const categoryLabels = {
     peer_review: 'Peer Review',
     ethics: 'Publication Ethics',
@@ -51,7 +53,6 @@ const Policies = () => {
     complaints: 'Complaints & Appeals',
   };
 
-  // Filter policies
   const filteredPolicies = policies.filter(policy => {
     const matchesSearch = policy.title?.toLowerCase().includes(search.toLowerCase()) ||
                          policy.content?.toLowerCase().includes(search.toLowerCase());
@@ -65,7 +66,6 @@ const Policies = () => {
 
   return (
     <div>
-      {/* Title Section with Decorative Line */}
       <div className="flex justify-between items-start mb-8">
         <div className="flex flex-col">
           <h1 className="text-3xl font-bold text-gray-800 tracking-tight">
@@ -81,7 +81,6 @@ const Policies = () => {
         </Link>
       </div>
 
-      {/* Filters - Glass Card */}
       <div className="bg-white/40 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg p-4 mb-6 hover:shadow-xl transition-all duration-300">
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[200px]">
@@ -111,7 +110,6 @@ const Policies = () => {
         </div>
       </div>
 
-      {/* Policy List - Glass Table */}
       <PolicyList
         policies={filteredPolicies}
         onDelete={handleDelete}

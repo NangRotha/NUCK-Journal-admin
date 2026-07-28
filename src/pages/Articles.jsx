@@ -31,7 +31,7 @@ const Articles = () => {
     if (!confirm('Are you sure you want to delete this article?')) return;
 
     try {
-      await axiosInstance.delete(`/articles/${id}`);
+      await axiosInstance.delete(`/articles/${id}/`);
       fetchArticles();
     } catch (error) {
       console.error('Error deleting article:', error);
@@ -40,7 +40,7 @@ const Articles = () => {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axiosInstance.put(`/articles/${id}`, { status: newStatus });
+      await axiosInstance.put(`/articles/${id}/`, { status: newStatus });
       fetchArticles();
     } catch (error) {
       console.error('Error updating status:', error);

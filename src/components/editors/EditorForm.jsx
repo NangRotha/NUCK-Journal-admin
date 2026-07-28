@@ -33,7 +33,7 @@ const EditorForm = () => {
 
   const fetchEditor = async () => {
     try {
-      const response = await axiosInstance.get(`/editors/${id}`);
+      const response = await axiosInstance.get(`/editors/${id}/`);
       const data = response.data;
       setFormData({
         name: data.name || '',
@@ -82,7 +82,7 @@ const EditorForm = () => {
       }
 
       if (id) {
-        await axiosInstance.put(`/editors/${id}`, formDataObj, {
+        await axiosInstance.put(`/editors/${id}/`, formDataObj, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
