@@ -1,21 +1,27 @@
 import axios from 'axios';
 
-// ទាញយក URL ពី Environment Variable (ឬប្រើ Default ប្រសិនបើគ្មាន)
-// សូមប្តូរ URL ខាងក្រោមទៅជា URL របស់ Railway ឬ Vercel របស់អ្នក
+// 🟢 CHANGE THIS: Use your Railway backend URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://nuck-journal-backend-production.up.railway.app';
+
+export const getFileUrl = (filePath) => {
+  if (!filePath) return '';
+  if (filePath.startsWith('http')) return filePath;
+  if (filePath.startsWith('/')) return `${API_BASE_URL}${filePath}`;
+  return `${API_BASE_URL}/${filePath}`;
+};
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
 });
 
-// Request interceptor
+// Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('admin_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // const token = localStorage.getItem('token');
+    // if (token) {
+    //   config.headers.Authorization = `Bearer ${token}`;
+    // }
     return config;
   },
   (error) => {
@@ -23,27 +29,21 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response Interceptor
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('admin_token');
-      localStorage.removeItem('admin_user');
-      window.location.href = '/login';
+    if (error.response) {
+      console.error('API Error:', error.response.data);
+    } else if (error.request) {
+      console.error('No response from server. Check if Backend is running.');
+    } else {
+      console.error('Error:', error.message);
     }
     return Promise.reject(error);
   }
 );
-
-// Helper function to get full File URL
-export const getFileUrl = (filePath) => {
-  if (!filePath) return '';
-  // បើ filePath ចាប់ផ្តើមដោយ / រួចហើយ គ្រាន់តែបន្ថែម Base URL
-  if (filePath.startsWith('/')) {
-    return `${API_BASE_URL}${filePath}`;
-  }
-  return `${API_BASE_URL}/${filePath}`;
-};
 
 export default axiosInstance;
