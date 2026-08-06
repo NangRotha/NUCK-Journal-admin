@@ -56,11 +56,8 @@ const AdminLayout = ({ children }) => {
 };
 
 function App() {
-  const routerFuture = {
-    v7_startTransition: true,
-    v7_relativeSplatPath: true,
-  };
-
+  // 🟢 REMOVED: routerFuture to prevent "Throttling navigation" on Vercel
+  
   // 🟢 ទាញយក Logo ពី Backend ហើយកំណត់ជា Favicon + Update Title
   useEffect(() => {
     const fetchFavicon = async () => {
@@ -71,7 +68,8 @@ function App() {
           settingsData[setting.key] = setting.value;
         });
 
-        const baseURL = import.meta.env.VITE_API_URL || 'https://nuck-journal-backend.vercel.app';
+        // 🟢 FIXED: Use the exact Railway URL from axiosConfig
+        const baseURL = import.meta.env.VITE_API_URL || 'https://nuck-journal-backend-production.up.railway.app';
 
         if (settingsData.logo_url) {
           const faviconUrl = `${baseURL}${settingsData.logo_url}`;
@@ -102,7 +100,8 @@ function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <Router future={routerFuture}>
+        {/* 🟢 REMOVED: future={routerFuture} to be fully compatible with Vercel */}
+        <Router>
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
