@@ -56,8 +56,11 @@ const AdminLayout = ({ children }) => {
 };
 
 function App() {
-  // 🟢 REMOVED: routerFuture to prevent "Throttling navigation" on Vercel
-  
+  // 🟢 បន្ថែម Flag នេះដើម្បីកុំឱ្យមាន Warning "Throttling navigation"
+  const routerFuture = {
+    v7_startTransition: true,
+  };
+
   // 🟢 ទាញយក Logo ពី Backend ហើយកំណត់ជា Favicon + Update Title
   useEffect(() => {
     const fetchFavicon = async () => {
@@ -100,8 +103,8 @@ function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        {/* 🟢 REMOVED: future={routerFuture} to be fully compatible with Vercel */}
-        <Router>
+        {/* 🟢 បញ្ជូន Flag ទៅក្នុង Router */}
+        <Router future={routerFuture}>
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
