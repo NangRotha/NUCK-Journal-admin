@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance, { getFileUrl } from '../api/axiosConfig';
@@ -7,13 +7,20 @@ import axiosInstance, { getFileUrl } from '../api/axiosConfig';
 const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, user } = useAuth();
-  const [username, setUsername] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
   const [logoLoading, setLogoLoading] = useState(true);
+
+  useEffect(() => {
+    if (location.state?.error) {
+      setError(location.state.error);
+    }
+  }, [location.state]);
 
   // ទាញយក Logo ពី Backend
   useEffect(() => {
@@ -45,16 +52,12 @@ const Login = () => {
     setLoading(true);
     setError('');
 
-    const result = await login(username, password);
+    const result = await login(identifier, password);
     
     if (result.success) {
       navigate('/admin');
     } else {
-      if (typeof result.error === 'object') {
-        setError(JSON.stringify(result.error));
-      } else {
-        setError(result.error || 'Invalid credentials');
-      }
+      setError(result.error || 'Invalid credentials');
     }
     setLoading(false);
   };
@@ -102,14 +105,14 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Username or Email</label>
               <input
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 placeholder-gray-400"
-                placeholder="Enter your username"
+                placeholder="Enter your username or email"
               />
             </div>
 

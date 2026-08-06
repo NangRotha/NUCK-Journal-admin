@@ -14,6 +14,10 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
+  if (user.role !== 'admin') {
+    return <Navigate to="/login" replace state={{ error: 'Only admin users can access this dashboard.' }} />;
+  }
+
   return children;
 };
 

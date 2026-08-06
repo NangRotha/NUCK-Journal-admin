@@ -6,7 +6,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import AdminHeader from './components/common/AdminHeader';
 import AdminSidebar from './components/common/AdminSidebar';
 import axiosInstance from './api/axiosConfig';
-import NotFound from './components/common/NotFound'; // ✅ នាំចូល NotFound
+import NotFound from './components/common/NotFound';
 
 // --- Pages ---
 import Login from './pages/Login';
@@ -20,6 +20,13 @@ import Settings from './pages/Settings';
 import HeroSlides from './pages/HeroSlides';
 import ContactMessages from './pages/ContactMessages';
 
+// 🟢 New User & Review Management Pages
+import Users from './pages/Users';
+import Reviews from './pages/Reviews';
+import ReviewInvitations from './pages/ReviewInvitations';
+import ReviewerDashboard from './pages/ReviewerDashboard';
+import AuthorDashboard from './pages/AuthorDashboard';
+
 // --- Detail & Form Components ---
 import ArticleDetails from './components/articles/ArticleDetails';
 import ArticleForm from './components/articles/ArticleForm';
@@ -28,6 +35,11 @@ import PolicyForm from './components/policies/PolicyForm';
 import IssueForm from './components/issues/IssueForm';
 import AnnouncementForm from './components/announcements/AnnouncementForm';
 import HeroSlideForm from './components/hero/HeroSlideForm';
+import ReviewDetails from './pages/ReviewDetails';
+import UserDetails from './pages/UserDetails';
+
+// 🟢 New User Form Component
+import UserForm from './components/users/UserForm';
 
 const AdminLayout = ({ children }) => {
   return (
@@ -44,7 +56,6 @@ const AdminLayout = ({ children }) => {
 };
 
 function App() {
-  // React Router future flags
   const routerFuture = {
     v7_startTransition: true,
     v7_relativeSplatPath: true,
@@ -60,10 +71,8 @@ function App() {
           settingsData[setting.key] = setting.value;
         });
 
-        // ✅ 1. ទាញយក Base URL ពី Environment Variable ដើម្បីសុវត្ថិភាព
         const baseURL = import.meta.env.VITE_API_URL || 'https://nuck-journal-backend.vercel.app';
 
-        // ✅ 2. Update Title Icon (Favicon)
         if (settingsData.logo_url) {
           const faviconUrl = `${baseURL}${settingsData.logo_url}`;
           let link = document.querySelector("link[rel~='icon']");
@@ -76,7 +85,6 @@ function App() {
           console.log('✅ Admin Favicon updated to:', faviconUrl);
         }
 
-        // ✅ 3. Update Document Title
         if (settingsData.journal_name) {
           document.title = `NUCK Admin - ${settingsData.journal_name}`;
         } else {
@@ -107,6 +115,7 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* 🟢 Articles Routes */}
             <Route path="/admin/articles" element={
               <ProtectedRoute>
                 <AdminLayout>
@@ -136,6 +145,7 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* 🟢 Editors Routes */}
             <Route path="/admin/editors" element={
               <ProtectedRoute>
                 <AdminLayout>
@@ -158,6 +168,7 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* 🟢 Policies Routes */}
             <Route path="/admin/policies" element={
               <ProtectedRoute>
                 <AdminLayout>
@@ -180,6 +191,7 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* 🟢 Announcements Routes */}
             <Route path="/admin/announcements" element={
               <ProtectedRoute>
                 <AdminLayout>
@@ -202,6 +214,7 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* 🟢 Issues Routes */}
             <Route path="/admin/issues" element={
               <ProtectedRoute>
                 <AdminLayout>
@@ -224,6 +237,7 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* 🟢 Settings Routes */}
             <Route path="/admin/settings" element={
               <ProtectedRoute>
                 <AdminLayout>
@@ -232,6 +246,7 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* 🟢 Hero Slides Routes */}
             <Route path="/admin/hero-slides" element={
               <ProtectedRoute>
                 <AdminLayout>
@@ -254,6 +269,7 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* 🟢 Contact Messages Routes */}
             <Route path="/admin/contact-messages" element={
               <ProtectedRoute>
                 <AdminLayout>
@@ -262,7 +278,84 @@ function App() {
               </ProtectedRoute>
             } />
 
-            {/* ✅ 404 Route - ត្រូវតែនៅខាងចុងបំផុត */}
+            {/* ========================================== */}
+            {/* 🟢 NEW FEATURES: USER & REVIEW MANAGEMENT */}
+            {/* ========================================== */}
+
+            {/* 🟢 Users Routes */}
+            <Route path="/admin/users" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <Users />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/users/:id" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <UserDetails />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/users/create" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <UserForm />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/users/edit/:id" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <UserForm />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* 🟢 Reviews Routes */}
+            <Route path="/admin/reviews" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <Reviews />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/reviews/:id" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <ReviewDetails />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* 🟢 Review Invitations Routes */}
+            <Route path="/admin/review-invitations" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <ReviewInvitations />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* 🟢 Reviewer Dashboard (Admin can view reviewer's work) */}
+            <Route path="/admin/reviewer/:id" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <ReviewerDashboard />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* 🟢 Author Dashboard (Admin can view author's work) */}
+            <Route path="/admin/author/:id" element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AuthorDashboard />
+                </AdminLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* ✅ 404 Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

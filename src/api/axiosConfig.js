@@ -18,10 +18,11 @@ const axiosInstance = axios.create({
 // Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    // 🟢 FIX: Automatically attach the token if it exists
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -35,6 +36,13 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
+    // 🟢 FIX: If token is invalid (401), auto logout
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('admin_token');
+      localStorage.removeItem('admin_user');
+      window.location.href = '/login';
+    }
+
     if (error.response) {
       console.error('API Error:', error.response.data);
     } else if (error.request) {

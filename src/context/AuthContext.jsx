@@ -1,88 +1,87 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
 
 const AuthContext = createContext();
+
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('admin_token');
-    const userData = localStorage.getItem('admin_user');
-    
-    if (token && userData) {
-      setUser(JSON.parse(userData));
-    }
-    setLoading(false);
+    const checkAuth = async () => {
+      const token = localStorage.getItem('admin_token');
+      const storedUser = localStorage.getItem('admin_user');
+      
+      if (token && storedUser) {
+        try {
+          // Set Authorization header for all future requests
+          axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          logout();
+        }
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
   }, []);
 
-  const login = async (username, password) => {
+  // 🟢 Fixed: The login function now actually calls the backend!
+  const login = async (identifier, password) => {
     try {
-      // បញ្ជូន JSON Body ដោយផ្ទាល់ ព្រោះ Backend បានកែរួចហើយ
-      const response = await axiosInstance.post('/users/login', {
-        username: username,
-        password: password
-      });
+      const response = await axiosInstance.post('/users/login', { email: identifier, password });
+      
+      // 2. Extract user data and token from backend response
+      // Note: You must make sure your backend returns a 'token' field!
+      const { user_id, full_name, email, role, token } = response.data;
 
-      if (response.data) {
-        const userData = {
-          id: response.data.user_id,
-          username: response.data.username,
-          email: response.data.email,
-          isAdmin: response.data.is_admin
-        };
-        
-        localStorage.setItem('admin_token', 'dummy-token');
-        localStorage.setItem('admin_user', JSON.stringify(userData));
-        setUser(userData);
-        return { success: true };
-      }
+      // 3. Prepare user object
+      const userData = { id: user_id, full_name, email, role };
+
+      // 4. Store in LocalStorage
+      localStorage.setItem('admin_token', token);
+      localStorage.setItem('admin_user', JSON.stringify(userData));
+      
+      // 5. Set Auth Header globally
+      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      // 6. Update React State
+      setUser(userData);
+
+      return { success: true };
     } catch (error) {
-      let errorMessage = 'Invalid credentials';
-      
-      if (error.response) {
-        // ត្រួតពិនិត្យ Status Code ផ្សេងៗ
-        if (error.response.status === 401) {
-          errorMessage = 'Invalid username or password';
-        } else if (error.response.data?.detail) {
-          // បើ Backend ត្រឡប់ error message ជាក់លាក់
-          if (typeof error.response.data.detail === 'string') {
-            errorMessage = error.response.data.detail;
-          } else {
-            errorMessage = 'Login failed';
-          }
-        }
-      } else if (error.request) {
-        errorMessage = 'No response from server (Check if Backend is running)';
-      } else {
-        errorMessage = error.message;
-      }
-      
+      // Return the error to the Login component
       return { 
         success: false, 
-        error: errorMessage 
+        error: typeof error.response?.data?.detail === 'string' 
+          ? error.response.data.detail 
+          : 'Invalid credentials. Please try again.' 
       };
     }
   };
 
+  // 🟢 Fixed: Logout clears everything cleanly
   const logout = () => {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');
+    delete axiosInstance.defaults.headers.common['Authorization'];
     setUser(null);
+    window.location.href = '/login';
+  };
+
+  const value = {
+    user,
+    loading,
+    login,
+    logout
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
 };

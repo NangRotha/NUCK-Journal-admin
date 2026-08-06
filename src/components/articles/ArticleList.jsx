@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../api/axiosConfig';
 
-const ArticleList = ({ articles, onDelete, onStatusChange }) => {
+const ArticleList = ({ articles, onDelete, onStatusChange, onInviteReviewer, onAssignVolumeIssue }) => {
   const { t } = useTranslation();
 
   const getStatusColor = (status) => {
@@ -17,26 +17,19 @@ const ArticleList = ({ articles, onDelete, onStatusChange }) => {
     return colors[status] || 'bg-gray-100/80 text-gray-800 backdrop-blur-sm';
   };
 
-  // 🟢 Function សម្រាប់រាប់ View ពេលចុច View PDF
   const handleViewPDF = async (articleId, pdfUrl) => {
     try {
-      // ផ្ញើ Request ទៅ Backend ដើម្បីបន្ថែម View +1
       await axiosInstance.post(`/articles/${articleId}/track?action=view`);
-      // បើក PDF ក្នុង Tab ថ្មី
       window.open(pdfUrl, '_blank');
     } catch (error) {
       console.error('Error tracking view:', error);
-      window.open(pdfUrl, '_blank'); // បើក PDF ទោះ Track បរាជ័យក៏ដោយ
+      window.open(pdfUrl, '_blank');
     }
   };
 
-  // 🟢 Function សម្រាប់រាប់ Download ពេលចុច Download
   const handleDownloadPDF = async (articleId, downloadUrl, filename) => {
     try {
-      // ផ្ញើ Request ទៅ Backend ដើម្បីបន្ថែម Download +1
       await axiosInstance.post(`/articles/${articleId}/track?action=download`);
-      
-      // ទាញយកឯកសារដោយប្រើ link temporary
       const link = document.createElement('a');
       link.href = downloadUrl;
       link.download = filename || 'article.pdf';
@@ -45,7 +38,6 @@ const ArticleList = ({ articles, onDelete, onStatusChange }) => {
       document.body.removeChild(link);
     } catch (error) {
       console.error('Error tracking download:', error);
-      // Fallback download ប្រសិនបើ Track បរាជ័យ
       const link = document.createElement('a');
       link.href = downloadUrl;
       link.download = filename || 'article.pdf';
@@ -105,39 +97,32 @@ const ArticleList = ({ articles, onDelete, onStatusChange }) => {
                   <div className="text-xs text-gray-500 group-hover:text-primary-500 transition-colors duration-200">
                     {article.doi && `DOI: ${article.doi}`}
                   </div>
-                  
-                  {/* 🟢 ផ្នែកទី 3: បន្ថែម Views, Downloads, Citations នៅទីនេះ */}
                   <div className="flex flex-wrap items-center gap-4 mt-2 pt-2 border-t border-gray-100/50">
-                    {/* Views */}
                     <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium">
                       <svg className="w-3.5 h-3.5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
-                      <span>Abstract Views : {article.views || 0}+</span>
+                      <span>Views: {article.views || 0}+</span>
                     </div>
-
-                    {/* Downloads */}
                     <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium">
                       <svg className="w-3.5 h-3.5 text-[#6c5ce7]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
-                      <span>Download : {article.downloads || 0}+</span>
+                      <span>Downloads: {article.downloads || 0}+</span>
                     </div>
-
-                    {/* Citations */}
                     <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium">
                       <svg className="w-3.5 h-3.5 text-[#f59e0b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                       </svg>
-                      <span>Citations : {article.citations || 0}</span>
+                      <span>Citations: {article.citations || 0}</span>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm text-gray-900">
-                    {article.authors?.split(',').slice(0, 3).join(', ')}
-                    {article.authors?.split(',').length > 3 && ' et al.'}
+                    {(article.authors || '').split(',').slice(0, 3).join(', ')}
+                    {(article.authors || '').split(',').length > 3 && ' et al.'}
                   </div>
                 </td>
                 <td className="px-6 py-4">
@@ -148,7 +133,7 @@ const ArticleList = ({ articles, onDelete, onStatusChange }) => {
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {new Date(article.submitted_date).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 text-right space-x-3">
+                <td className="px-6 py-4 text-right space-x-2">
                   <Link
                     to={`/admin/articles/${article.id}`}
                     className="text-primary-600 hover:text-primary-800 font-medium text-sm transition-colors duration-200 hover:underline"
@@ -161,6 +146,26 @@ const ArticleList = ({ articles, onDelete, onStatusChange }) => {
                   >
                     {t('common.edit')}
                   </Link>
+                  
+                  {/* 🟢 បន្ថែមប៊ូតុង Assign Volume/Issue (សម្រាប់ Accepted និង Published) */}
+                  {(article.status === 'accepted' || article.status === 'published') && (
+                    <button
+                      onClick={() => onAssignVolumeIssue(article)}
+                      className="text-orange-600 hover:text-orange-800 font-medium text-sm transition-colors duration-200 hover:underline"
+                    >
+                      Assign Vol/Issue
+                    </button>
+                  )}
+
+                  {/* Invite Reviewer Button - Only for submitted/under_review */}
+                  {(article.status === 'submitted' || article.status === 'under_review') && (
+                    <button
+                      onClick={() => onInviteReviewer(article)}
+                      className="text-purple-600 hover:text-purple-800 font-medium text-sm transition-colors duration-200 hover:underline"
+                    >
+                      Invite Reviewer
+                    </button>
+                  )}
                   <button
                     onClick={() => onDelete(article.id)}
                     className="text-red-600 hover:text-red-800 font-medium text-sm transition-colors duration-200 hover:underline"

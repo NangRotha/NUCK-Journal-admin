@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../context/AuthContext';
 import axiosInstance, { getFileUrl } from '../../api/axiosConfig';
 
 const AdminSidebar = () => {
   const { t } = useTranslation();
+  const { logout } = useAuth();
   const [logoUrl, setLogoUrl] = useState('');
   const [logoLoading, setLogoLoading] = useState(true);
 
-  // ✅ ទាញយក Logo ពី Backend នៅពេលទំព័រផ្ទុក
   useEffect(() => {
     const fetchLogo = async () => {
       try {
@@ -38,6 +39,21 @@ const AdminSidebar = () => {
     { path: '/admin/articles', label: t('admin.articles'), icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    )},
+    { path: '/admin/reviews', label: 'Reviews', icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    )},
+    { path: '/admin/review-invitations', label: 'Invitations', icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    )},
+    { path: '/admin/users', label: 'Users', icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
       </svg>
     )},
     { path: '/admin/editors', label: t('admin.editors'), icon: (
@@ -81,11 +97,9 @@ const AdminSidebar = () => {
   return (
     <aside className="flex flex-col w-64 h-screen bg-gradient-to-br from-[#5b4fcf] via-[#6c5ce7] to-[#a29bfe] shadow-2xl flex-shrink-0">
       
-      {/* ============ Sidebar Header ============ */}
+      {/* Sidebar Header */}
       <div className="p-6 pb-8 border-b border-white/10">
         <div className="flex items-center gap-3">
-          
-          {/* ✅ Logo Wrapper - ទាញយកពី Backend */}
           <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white shadow-lg overflow-hidden">
             {!logoLoading && logoUrl ? (
               <img 
@@ -93,7 +107,6 @@ const AdminSidebar = () => {
                 alt="NUCK Admin Logo"
                 className="w-full h-full object-contain"
                 onError={(e) => {
-                  // បើរូបភាពផ្ទុកមិនជោគជ័យ បង្ហាញ Fallback
                   e.target.style.display = 'none';
                   const parent = e.target.parentElement;
                   const fallback = document.createElement('div');
@@ -107,13 +120,11 @@ const AdminSidebar = () => {
                 }}
               />
             ) : (
-              // ✅ Fallback ពេលគ្មាន Logo ឬកំពុងផ្ទុក
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             )}
           </div>
-          
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight leading-tight">NUCK Admin</h2>
             <div className="w-8 h-1 bg-white/30 rounded-full mt-0.5"></div>
@@ -121,7 +132,7 @@ const AdminSidebar = () => {
         </div>
       </div>
 
-      {/* ============ Navigation Menu ============ */}
+      {/* Navigation Menu */}
       <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
         {menuItems.map((item) => (
           <NavLink
@@ -135,7 +146,6 @@ const AdminSidebar = () => {
               }`
             }
           >
-            {/* Left Accent Line for Active Item */}
             <span 
               className={`
                 absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-full transition-all duration-300
@@ -153,14 +163,17 @@ const AdminSidebar = () => {
         ))}
       </nav>
 
-      {/* ============ Bottom Section (Logout) ============ */}
+      {/* Bottom Section: Logout */}
       <div className="p-6 border-t border-white/10 mt-auto">
-        <div className="flex items-center gap-3 text-white/60 hover:text-white transition-colors duration-200 cursor-pointer">
+        <button 
+          onClick={logout}
+          className="w-full flex items-center gap-3 text-white/60 hover:text-white transition-colors duration-200 cursor-pointer text-left"
+        >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           <span className="text-sm font-medium">Logout</span>
-        </div>
+        </button>
       </div>
     </aside>
   );
