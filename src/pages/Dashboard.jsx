@@ -92,25 +92,15 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="relative space-y-8">
-      
-      {/* ✅ Decorative Background Shapes with Grid Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%233b82f6%22 fill-opacity=%220.05%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
-      <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-primary-400/10 rounded-full blur-3xl animate-pulse-slow"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-400/10 rounded-full blur-3xl animate-pulse-slow delay-1000"></div>
-
-      {/* ✅ Welcome Card with Glass UI */}
-      <div className="relative z-10 bg-gradient-to-r from-primary-600/80 via-primary-500/80 to-primary-400/80 backdrop-blur-lg border border-white/20 rounded-2xl p-8 text-white shadow-2xl animate-fadeInUp overflow-hidden">
-        <div className="absolute top-[-50%] right-[-20%] w-64 h-64 bg-white/10 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-[-50%] left-[-20%] w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
-        <div className="relative z-10">
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">
-            {t('admin.welcome') || 'Welcome back!'}
-          </h2>
-          <p className="text-primary-100/90 text-sm md:text-base max-w-xl">
-            Here's what's happening with your journal today. Manage your content and track performance from one place.
-          </p>
-        </div>
+    <div className="relative space-y-8 animate-fadeInUp">
+      {/* ✅ Welcome Card */}
+      <div className="relative z-10 bg-white rounded-2xl border border-gray-200 p-8 shadow-sm animate-fadeInUp animation-delay-100">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+          {t('admin.welcome') || 'Welcome back!'}
+        </h2>
+        <p className="text-gray-600 text-sm md:text-base max-w-xl">
+          Here's what's happening with your journal today. Manage your content and track performance from one place.
+        </p>
       </div>
 
       {/* ✅ Dashboard Stats */}
@@ -122,16 +112,16 @@ const Dashboard = () => {
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fadeInUp animation-delay-400">
         <RecentActivity activities={activities} />
         
-        {/* Quick Actions Glass Card */}
-        <div className="bg-white/30 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl p-6 hover:shadow-3xl hover:scale-[1.01] transition-all duration-300">
+        {/* Quick Actions - កែតម្រូវដោយយក href ចេញទាំងស្រុង */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-all duration-300">
           <h3 className="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
           <div className="space-y-3">
             <Link
               to="/admin/articles/create"
-              className="group block w-full px-4 py-3 bg-white/40 backdrop-blur-sm text-primary-700 rounded-xl hover:bg-white/60 hover:shadow-md hover:scale-105 transition-all duration-200 text-left font-medium border border-white/20"
+              className="group block w-full px-4 py-3 bg-gray-50 text-blue-700 rounded-xl hover:bg-blue-50 hover:shadow-sm transition-all duration-200 text-left font-medium border border-gray-100"
             >
               <span className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-200">
-                <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
                 Create New Article
@@ -139,7 +129,7 @@ const Dashboard = () => {
             </Link>
             <Link
               to="/admin/editors/create"
-              className="group block w-full px-4 py-3 bg-white/40 backdrop-blur-sm text-green-700 rounded-xl hover:bg-white/60 hover:shadow-md hover:scale-105 transition-all duration-200 text-left font-medium border border-white/20"
+              className="group block w-full px-4 py-3 bg-gray-50 text-green-700 rounded-xl hover:bg-green-50 hover:shadow-sm transition-all duration-200 text-left font-medium border border-gray-100"
             >
               <span className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-200">
                 <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,39 +138,27 @@ const Dashboard = () => {
                 Add New Editor
               </span>
             </Link>
-            <Link
-              to="/admin/announcements/create"
-              className="group block w-full px-4 py-3 bg-white/40 backdrop-blur-sm text-purple-700 rounded-xl hover:bg-white/60 hover:shadow-md hover:scale-105 transition-all duration-200 text-left font-medium border border-white/20"
-            >
-              <span className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-200">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.068-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-                </svg>
-                Create Announcement
-              </span>
-            </Link>
           </div>
         </div>
       </div>
 
       {/* ✅ Charts Section */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fadeInUp animation-delay-600">
-        {/* Bar Chart - Domain Distribution */}
-        <div className="bg-white/30 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl p-6 hover:shadow-3xl transition-all duration-300">
+        {/* Bar Chart */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-all duration-300">
           <h3 className="text-lg font-bold text-gray-800 mb-4">Articles by Domain</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb/50" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis dataKey="name" stroke="#6b7280" />
                 <YAxis stroke="#6b7280" />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-                    backdropFilter: 'blur(8px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
                     borderRadius: '12px',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+                    border: '1px solid #e5e7eb',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
                   }}
                 />
                 <Bar 
@@ -201,8 +179,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Pie Chart - Status Distribution */}
-        <div className="bg-white/30 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl p-6 hover:shadow-3xl transition-all duration-300">
+        {/* Pie Chart */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-all duration-300">
           <h3 className="text-lg font-bold text-gray-800 mb-4">Articles by Status</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -223,11 +201,10 @@ const Dashboard = () => {
                 </Pie>
                 <Tooltip
                   contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-                    backdropFilter: 'blur(8px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
                     borderRadius: '12px',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+                    border: '1px solid #e5e7eb',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
                   }}
                 />
                 <Legend 

@@ -29,7 +29,7 @@ const UserForm = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axiosInstance.get(`/users/${id}/`);
+      const response = await axiosInstance.get(`/users/${id}`);
       const data = response.data;
       setFormData({
         full_name: data.full_name || '',
@@ -77,7 +77,7 @@ const UserForm = () => {
       delete dataToSend.confirm_password;
 
       if (id) {
-        await axiosInstance.put(`/users/${id}/`, dataToSend);
+        await axiosInstance.put(`/users/${id}`, dataToSend);
       } else {
         await axiosInstance.post('/users/register', dataToSend);
       }

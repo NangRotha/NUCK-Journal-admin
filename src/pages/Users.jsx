@@ -30,7 +30,7 @@ const Users = () => {
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
     try {
-      await axiosInstance.delete(`/users/${id}/`);
+      await axiosInstance.delete(`/users/${id}`);
       fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
