@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 🟢 ត្រូវប្រាកដថាតម្លៃនេះជា URL របស់ Railway Backend របស់អ្នក
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://nuck-journal-backend-production.up.railway.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 export const getFileUrl = (filePath) => {
   if (!filePath) return '';
